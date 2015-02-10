@@ -1,12 +1,71 @@
 #include"sDeque.h"
 #include <iostream>
+#include"time.h"
 
 
+double elapsed_time;
 using namespace std;
+
+
 int main(int argc, char **argv) {
+   // clock_t start
+    /*
+    clock_t start = clock();
+
+    int op = 0;
+    string input, line, str;
+    Deque *DQ = new Deque();
+    cout << "What is the name of the file you would like to read in?" << endl;
+    cin >> input;
+    ifstream file; //the file that will be read throughout the program
+    file.open(input.c_str()); // open the file
+    try {
+        while (op < 5){
+                getline(file, line); // Saves the line in number of computers as a string.
+                op = atoi(line.c_str());
+                switch (op) {
+                case 0:
+                        getline(file, str); // Saves the line in number of computers as a string.
+                        DQ->push_front(str);
+                        break;
+                case 1:
+                        getline(file, str); // Saves the line in number of computers as a string.
+                        DQ->push_back(str);
+                        break;
+                case 2:
+                        DQ->pop_front();
+                        break;
+                case 3:
+                        DQ->pop_back();
+                        break;
+                case 4:
+                        //DQ -> print_queue();
+                        cout << DQ->toStr();
+                        break;
+                }
+        }
+    }
+    catch (exception& e){
+        cout << e.what() << '\n';
+    }
+    DQ -> ~Deque();
+    clock_t finish = clock();
+    //finish = clock - start();
+    double interval = finish-start/ (double)CLOCKS_PER_SEC;
+    cout<<"clock cycles: "<<finish<<endl;
+    cout<<"seconds elapsed: "<<interval<<endl;
+    return 0;
+}
+    */
+
+    //for(int i = 0; i < )    cout << d -> empty() << endl;
+
+    clock_t start = clock();
 	int op=0;
 	std::string input;
 	Deque *DQ = new Deque();
+
+
 
 	while (op<6)
 	{
@@ -39,16 +98,17 @@ int main(int argc, char **argv) {
 			DQ->print_queue();
 			break;
 		}
-
 	}
-    DQ -> ~Deque();
-	return 0;
 
+    DQ -> ~Deque();
+
+    clock_t finish = clock();
+    //finish = clock - start();
+    double interval = finish-start/ (double)CLOCKS_PER_SEC;
+    cout<<"clock cycles: "<<finish<<endl;
+    cout<<"seconds elapsed: "<<interval<<endl;
+
+    return 0;
 }
-/*
-    d->print_queue();
-    for(int i = 0; i  < 40;  i++) {
-        d->pop_back();
-        d->pop_front();
-    }
-*/
+
+
