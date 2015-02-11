@@ -3,9 +3,9 @@
 Deque::Deque(){//default constructor
     queue = new string[9];//the array with the minimal (8) element but with actually 9 containers(including 0)since I decided to use index0 as an "imaginary" pointer position for head;
     size_of_queue = 8;//The capacity of the queue by default is 8
-    minSize = 8;
+    minSize = 8;//I used this variable to make sure the array doesn't shrink below this number
     num_elements = 0;//The # of elements in the array initially is 0
-    head = 0; //
+    head = 0; // head is 0 (never utilized)
     tail = size_of_queue+1; //an imaginary indexing that represents the end of an array(not utilized, and can't be utilized);
     previousHead=0;
     previousTail=0;
@@ -14,15 +14,17 @@ Deque::~Deque(){
     delete [] queue;
 } //Destructor
 
-void Deque::grow(int initiSize, string temp[]){//called when the "old array" is fulled.
+void Deque::grow(int initiSize, string temp[]){//called when the "old array" is fulled. //passed in the original size of array, and the array itself.
     //int size = 2*initiSize;
     queue = new string[initiSize+1];
     cout<<"initialized new array with x2 the space"<<endl;
     //size_of_queue=size;
     //head = size_of_queue/2; //after expansion, the index for new head is at 1/2 of the entire new array
     //tail = size_of_queue+1; // this is an imaginary index that's after the space reserved for the last element
-    int i = tail+1;
-    int j=1;
+    int i = tail;    //this method and while loop basically copier everything from previous array starting from it's original tail(as the first element of the new array), and ends
+    int j=1;         //when all the elements from the old array are copied, meaning it ends at the original head.
+                     // Reorg
+
 
     while(j<=num_elements){
         if(i==(size_of_queue+1)){
