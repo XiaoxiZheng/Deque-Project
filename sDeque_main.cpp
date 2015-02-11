@@ -92,9 +92,10 @@ int main(int argc, char **argv) {
 			break;
 		case 4:
             DQ->toStr();
+            break;
 
 		case 5:
-            cout <<"\n\n\nYour Final queue looks like: " << endl;
+            cout <<"\n\n\nPrint what your Final queue really looks like: " << endl;
 			DQ->print_queue();
 			break;
 		}
