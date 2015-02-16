@@ -1,7 +1,8 @@
 #include "sDeque.h"
 
-Deque::Deque(){//default constructor
-    queue = new string[9];//the array with the minimal (8) element but with actually 9 containers(including 0)since I decided to use index0 as an "imaginary" pointer position for head;
+template <class T>
+Deque<T>::Deque(){//default constructor
+    queue = new T[9];//the array with the minimal (8) element but with actually 9 containers(including 0)since I decided to use index0 as an "imaginary" pointer position for head;
     size_of_queue = 8;//The capacity of the queue by default is 8
     minSize = 8;//I used this variable to make sure the array doesn't shrink below this number
     num_elements = 0;//The # of elements in the array initially is 0
@@ -10,22 +11,20 @@ Deque::Deque(){//default constructor
     previousHead=0;
     previousTail=0;
 }
-Deque::~Deque(){
+template <class T>
+Deque<T>::~Deque(){
     delete [] queue;
 } //Destructor
-
-void Deque::grow(int initiSize, string temp[]){//called when the "old array" is fulled. //passed in the original size of array, and the array itself.
+template <class T>
+void Deque<T>::grow(int initiSize,  T temp[]){//called when the "old array" is fulled. //passed in the original size of array, and the array itself.
     //int size = 2*initiSize;
-    queue = new string[initiSize+1];
-    cout<<"initialized new array with x2 the space"<<endl;
-    //size_of_queue=size;
-    //head = size_of_queue/2; //after expansion, the index for new head is at 1/2 of the entire new array
-    //tail = size_of_queue+1; // this is an imaginary index that's after the space reserved for the last element
-    int i = tail;    //this method and while loop basically copier everything from previous array starting from it's original tail(as the first element of the new array), and ends
+    queue = new T[initiSize+1];
+   // cout<<"initialized new array with x2 the space"<<endl;
+
+
+    int i = tail;    //this method and while loop basically copied everything from previous array starting from it's original tail(as the first element of the new array), and ends
     int j=1;         //when all the elements from the old array are copied, meaning it ends at the original head.
-                     // Reorg
-
-
+                     // Reorganized the elements in the array so when pop from head or tail that it would be equivalent in old array.
     while(j<=num_elements){
         if(i==(size_of_queue+1)){
             i = 1;
@@ -38,125 +37,88 @@ void Deque::grow(int initiSize, string temp[]){//called when the "old array" is 
 
 
 
-    /*
-    queue = new string[size];
-    start = size/4; //a temp head that is 1/4 into the array.
-    for(int i=0; i< num_elements; i++){ // copying stuff from old array to new array.
-        queue[start] = temp[i];
-        start++;
-    }*/
+template <class T>
+void Deque<T>::shrink(int initiSize,  T temp[]){ //called when the array is only 1/4 full, and shrinks the size of array to 1/2 of previous
+    //cout<<"shrink the array to 1/2 of previous size(because of the # of elements presented)"<<endl;
+    queue = new T[initiSize+1];
 
-void Deque::shrink(int initiSize, string temp[]){ //called when the array is only 1/4 full, and shrinks the size of array to 1/2 of previous
-    //size_of_queue = initiSize/2;
-    cout<<"shrink the array to 1/2 of previous size(because of the # of elements presented)"<<endl;
-    queue = new string[initiSize+1];
-
-
-   //going to write a long if/else statement to create this stupid new array..
-    /*
-    for(int i=0; i<=num_elements; i++){
-        queue[i] = temp[i];             //this method of copying array doesn't always work bc it doesn't account
-                                        //what happens if the array was initially expanded with empty spaces in the middle
-    }
-    */
     int i = tail;
     int j=1;
 
-    while(j<=num_elements){
-        if(i==(size_of_queue+1)){
+    while(j<=num_elements){  // Reorganized the elements in the array so when pop from head or tail that it would be equivalent in old array.
+        if(i==(size_of_queue+1)){  //refer to grow method for more explanation
             i = 1;
         }
         queue[j]=temp[i];
         j++;
         i++;
     }
-/*
-
-    if(tail!= size_of_queue +1){
-        int j=1;
-        for(int i=tail;j<=head;i++){
-            queue[j]=temp[i];
-            j++;
-        }
-    }
-    else{
-        int j=1;
-        for(int i=1;j<=head;i++){
-            queue[j]=temp[i];
-            j++;
-        }
-    }
-*/
 }
-void Deque::push_front(string element){
-    if(num_elements==size_of_queue){
+
+template <class T>
+void Deque<T>::push_front(T element){
+    if(num_elements==size_of_queue){ //if the num of elements in the array reaches the current capacity, then call this and grow.
         num_elements++;
-        cout<<"realizes its full"<<endl;//if that happens the current array is fulled...need to resize
+       // cout<<"realizes its full"<<endl;//if that happens the current array is fulled...need to resize
         grow(size_of_queue*2, queue);//calls grow helper method, which x2 the size of array.
-        cout<<"successfully called grow"<<endl;
-        size_of_queue=size_of_queue*2;
-        head = size_of_queue/2;
-        tail = size_of_queue+1; //+1;
-        queue[++head] = element;
-
-         //head = head+1;
+       // cout<<"successfully called grow"<<endl;
+        size_of_queue=size_of_queue*2; //new size of queue is doubled
+        head = size_of_queue/2; //new head is @ 1/2 of the new size of queue
+        tail = size_of_queue+1; //new tail @ the end of array+1 bc of my implementation (this is an imaginary position/ refer to default constructor for more info.
+        queue[++head] = element; // after it grow, pushes the element into the queue. its [++head] index bc the head is always one index behind where actual empty spaces are.
     }
-    else{
-       queue[++head] = element;
-       // head = head%size_of_queue;
-        num_elements++;
+    else{  //if pushing something to the front doesn't reaches the capacity. by default, do this.
+       queue[++head] = element; //its [++head] index bc the head is always one index behind where actual empty spaces are.
+        num_elements++; //increases the # of elements in the queue.
 
     }
 
 }
-void Deque::push_back(string element ){
+
+template <class T>
+void Deque<T>::push_back(T element ){ //extremely similar to the push_front implementation , refer to above more info.
     if(num_elements==size_of_queue){//if the array is  full, do the following
         num_elements++;
-        cout<<"realizes its full"<<endl;//if that happens the current array is fulled...need to resize
+        //cout<<"realizes its full"<<endl;//if that happens the current array is fulled...need to resize
         grow(size_of_queue*2, queue);//calls grow helper method, which x2 the size of array.
-        cout<<"successfully called grow"<<endl;
+       // cout<<"successfully called grow"<<endl;
         size_of_queue=size_of_queue*2;
         head = size_of_queue/2;
         tail = size_of_queue+1; ////tail is always the size of queue+1(an imaginary position for pointer purposes
         queue[--tail] = element;
 
     }
-    // NOTE: head++ == tails when the array is either full or empty...I need to consider all cases!!!!
-
     else{
         queue[--tail] = element;
-       // head = head%size_of_queue;
         num_elements++;
-
     }
 }
-string Deque::pop_front(){
-    string remove;//a local temp variable that saves the string to be removed
-    if((num_elements<=(size_of_queue/4))&& (size_of_queue > minSize)){ //always check if num_of_elements reached below the 1/4 line
+
+template <class T>
+T Deque<T>::pop_front(){ //for pop front and back I havee a temp string remove[], should the return type remain as string?or just change to the T?
+    //T remove;//a local temp variable that saves the string to be removed
+    if((num_elements<=(size_of_queue/4))&& (size_of_queue > minSize)){ //always check if num_of_elements reached below the 1/4 line and above the minimal array size[8]
         num_elements--; //subtract the num of elements inside the array.
-        int previousHead = head--; //the previous head before the new pointers gets new locations.
+        int previousHead = head--; //the previous head before the new pointers gets new locations, again head is a pointer that is always +1 then the actual element, so decrements for the previousHead.
 
 
-        remove = queue[previousHead];//again head is a pointer that is always +1 then the actual element, so set the element to be removed.
-        //string temp = queue[previousHead];
+        remove = queue[previousHead];//
         queue[previousHead]="";//after set it to remove, replace whatever element that was in there previously with an empty string
-        //head-- ; //decrement head
 
-        cout<<"You just removed: " << remove <<endl;
-        shrink(size_of_queue/2, queue);//if it does, then call the shrink helper method
-        cout<<"shrinks successfully"<<endl;
+        shrink(size_of_queue/2, queue);// call the shrink helper method
+        //cout<<"shrinks successfully"<<endl;
         size_of_queue = size_of_queue/2;
 
 
 
-        head=(size_of_queue/2)-1;
+        head=(size_of_queue/2)-1; // For some reason my array wont shrink until it actually hits below 1/4. so the head now is 1 less than the 1/2 the size of the current array
         tail=size_of_queue+1;
 
-
+        cout<<"You just removed: " << remove <<endl;
         return remove;
     }
-    else if(num_elements<=(size_of_queue/4)&& (head==0)){
-        cout<<"leftMost of the array and less than 1/4 full"<<endl;
+    else if(num_elements<=(size_of_queue/4)&& (head==0)){ //this else if statement is needed bc if the pop method happens to run into 1/4 and we are @ the very "front" of the array, I need to make the pointer go around to the "very back" of the array
+        //cout<<"leftMost of the array and less than 1/4 full"<<endl;
         num_elements--;
 
         shrink(size_of_queue/2, queue);
@@ -167,40 +129,38 @@ string Deque::pop_front(){
 
         int x = head--;
         remove = queue[x];
-        string temp = queue[x];
         queue[x] ="";
 
-        cout<<"You just removed: " << temp <<endl;
-        return temp;
+        cout<<"You just removed: " << remove <<endl;
+        return remove;
     }
     else if(head==0){ // if the head reaches 0, the array has reached the leftMost end of the array.
+        //cout<<"leftMost of the array"<<endl;
+        head = size_of_queue; //turn the tail pointer around to point to the end, and pop it. NOTE: I did not set it to size_of_queue+1,
+        int x = head;//   so it wasn't neccessary to decrement hear....altho it's more consistent with my code.
+        remove = queue[x]; //set the string to be remove before its emptied
 
-        cout<<"leftMost of the array"<<endl;
-        head = size_of_queue; //turn the tail pointer around to point to 1, and pop it.
-        int x = head;
-        remove = queue[x];
-        string temp = queue[x];
-        queue[x] ="";
-        num_elements--;
-        cout<<"You just removed: " << temp <<endl;
-        return temp;
+        queue[x] ="";//emptied string in the element
+        num_elements--; //decrement the num of element
+        //cout<<"You just removed: " << temp <<endl;
+        return remove;
     }
     else if((head+1)==tail){        cout<<"You have poped everything out of your array!!consider pushing in some new stuff"<<endl;
     }
     else{
-        int x = head--;
+        int x = head--; //All other cases, just decrements the head when poping.
         remove = queue[x];//
-        string temp = queue[x];
         queue[x]="";//after set it to remove, replace whatever element that was in there previously with an empty string
         //head-- ; //decrement head
         num_elements--; //subtract the num of elements inside the array.
-        cout<<"You just removed: " << temp <<endl;
-        return temp;
+        cout<<"You just removed: " << remove <<endl;
+        return remove;
     }
-    return remove;
 }
-string Deque::pop_back(){
-    string remove;//a local temp variable that saves the string to be removed
+
+template <class T>
+T Deque<T>::pop_back(){ //extremely similar implementation from pop_front(), refer there if needed
+    //T remove;//a local temp variable that saves the string to be removed
     if((num_elements<=(size_of_queue/4))&& (size_of_queue > minSize)){ //always check if num_of_elements reached below the 1/4 line
         num_elements--; //subtract the num of elements inside the array.
 
@@ -210,17 +170,16 @@ string Deque::pop_back(){
         cout<<"You just removed: " << remove <<endl;
 
         shrink(size_of_queue/2, queue);//if it does, then call the shrink helper method
-
         size_of_queue = size_of_queue/2;
 
         tail=size_of_queue+1;
-        head=(size_of_queue/2)-1;//new head is @ the new size/2
+        head=(size_of_queue/2)-1;//new head is @ the new size/2 -1, again bc my array wont actually shrink until it's less than 1/4 full. so the head need to be decremented
 
 
         return remove;
     }
     else if(num_elements<=(size_of_queue/4)&&(tail==(size_of_queue+1))){
-        cout<<"rightMost of the array and less than 1/4 full"<<endl;
+        //cout<<"rightMost of the array and less than 1/4 full"<<endl;
         num_elements--; //decrement before it resizes
         shrink(size_of_queue/2, queue);
         size_of_queue = size_of_queue/2;
@@ -230,45 +189,45 @@ string Deque::pop_back(){
 
         int x = tail++;
         remove = queue[x];
-        string temp = queue[x];
         queue[x] ="";
-        cout<<"You just removed: " << temp <<endl;
-        return temp;
+        cout<<"You just removed: " << remove <<endl;
+        return remove;
     }
     else if(tail==(size_of_queue+1)){ // if the head reaches sizeOfQueue +1(the initial tail position), the array has reached the rightMost end of the array.
         cout<<"rightMost of the array"<<endl;
         tail = 1; //turn the tail pointer around to point to 1, and pop it.
         int x = tail++;
         remove = queue[x];
-        string temp = queue[x];
         queue[x] ="";
         num_elements--;
-        cout<<"You just removed: " << temp <<endl;
-        return temp;
+        cout<<"You just removed: " << remove <<endl;
+        return remove;
     }
     else if(tail==head+1){ //if some-how I implemented the else if statement above, happens when it popped everything from both ends...
         cout<<"You have poped everything out of this queue...considering pushing in something?"<<endl;
     }
     else{
         int x = tail++;
-        remove = queue[x];//again head is a pointer that is always +1 then the actual element, so set the element to be removed.
-        string temp = queue[x];
+        remove = queue[x];//
         queue[x]="";//after set it to remove, replace whatever element that was in there previously with an empty string
-        //head-- ; //decrement head
         num_elements--; //subtract the num of elements inside the array.
-        cout<<"You just removed: " << temp <<endl;
-        return temp;
+        cout<<"You just removed: " << remove <<endl;
+        return remove;
     }
-
 }
-int Deque::size(){
+
+template <class T>
+int Deque<T>::size(){
     return num_elements;
 }
-bool Deque::empty(){
+
+template <class T>
+bool Deque<T>::empty(){
     return (num_elements ==0);
 }
 
-string Deque::toStr(){
+template <class T>
+string Deque<T>::toStr(){
 	stringstream output;
 	//string output;
     string* temp;
@@ -292,22 +251,15 @@ string Deque::toStr(){
         }
     }
 //    output = output + ss.str()+"\n";
-    return output.str();
-	/*for(int i = 0; i < size_of_queue+1; i++) {
-		string temp = queue[i];
-		if(temp == "") {
-			ss << i;
-		    output = output + "Index position " + ss.str() +  " is empty.\n";
-		}
-		else {
-			ss << i;
-		    output = output + "The content at index position " + ss.str() + " is: " + temp + "\n";
-		}
-	}*/
-   //return output;
-}
 
-void Deque::print_queue(){
+     cout<<"Array current size is: "<< size_of_queue <<endl;
+     cout << "There are " << num_elements << " elements in the array" << endl;
+        return output.str();
+}
+//this is just something I used to debugg....
+
+template <class T>
+void Deque<T>::print_queue(){
     cout << "\n\n\nThe size_of_queue size of the queue is: " << size_of_queue<< endl;
     cout << "There are " << num_elements << " elements in the array" << endl;
     for(int i = 1; i <size_of_queue +1; i++) {
@@ -321,4 +273,3 @@ void Deque::print_queue(){
     }
     cout << "\n\n\n" << endl;
 }
-
