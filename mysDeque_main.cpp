@@ -1,6 +1,5 @@
 #include"sDeque.h"
 #include <iostream>
-#include"time.h"
 
 
 double elapsed_time;

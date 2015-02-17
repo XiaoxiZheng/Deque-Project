@@ -97,7 +97,35 @@ void Deque<T>::push_back(T element ){ //extremely similar to the push_front impl
 template <class T>
 T Deque<T>::pop_front(){ //for pop front and back I havee a temp string remove[], should the return type remain as string?or just change to the T?
     //T remove;//a local temp variable that saves the string to be removed
-    if((num_elements<=(size_of_queue/4))&& (size_of_queue > minSize)){ //always check if num_of_elements reached below the 1/4 line and above the minimal array size[8]
+    if(empty()){
+        cout<<"The Queue is empty! Can't pop anything!"<<endl;
+      //  throw;
+    }
+        // deleted code from submission part a, it's unneccessary for this if/else statement because it's handle by other cases
+    else if((num_elements<=(size_of_queue/4))&&(head==0)&& (size_of_queue>minSize)){ //this else if statement is needed bc if the pop method happens to run into 1/4 and we are @ the very "front" of the array, I need to make the pointer go around to the "very back" of the array
+        //cout<<"leftMost of the array and less than 1/4 full"<<endl;
+        num_elements--;
+        int previousHead = size_of_queue; //the previous head before the new pointers gets new locations, again head is a pointer that is always +1 then the actual element, so decrements for the previousHead.
+
+        remove = queue[previousHead];//
+        queue[previousHead]="";
+
+        shrink(size_of_queue/2, queue);
+
+        size_of_queue =size_of_queue/2;
+        head = (size_of_queue/2)-1; //turn the head around to the end of array.
+        tail=(size_of_queue+1);
+        /*
+        int x = head--;
+        remove = queue[x];
+        queue[x] ="";
+    */
+        cout<<"You just removed: " << remove <<endl;
+        return remove;
+
+    }
+
+    else if((num_elements<=(size_of_queue/4))&& (size_of_queue > minSize)){ //always check if num_of_elements reached below the 1/4 line and above the minimal array size[8]
         num_elements--; //subtract the num of elements inside the array.
         int previousHead = head--; //the previous head before the new pointers gets new locations, again head is a pointer that is always +1 then the actual element, so decrements for the previousHead.
 
@@ -117,35 +145,18 @@ T Deque<T>::pop_front(){ //for pop front and back I havee a temp string remove[]
         cout<<"You just removed: " << remove <<endl;
         return remove;
     }
-    else if(num_elements<=(size_of_queue/4)&& (head==0)){ //this else if statement is needed bc if the pop method happens to run into 1/4 and we are @ the very "front" of the array, I need to make the pointer go around to the "very back" of the array
-        //cout<<"leftMost of the array and less than 1/4 full"<<endl;
-        num_elements--;
-
-        shrink(size_of_queue/2, queue);
-        size_of_queue =size_of_queue/2;
-
-        head = size_of_queue+1; //turn the head around to the end of array.
-      //  tail=(size_of_queue/2)-1;
-
-        int x = head--;
-        remove = queue[x];
-        queue[x] ="";
-
-        cout<<"You just removed: " << remove <<endl;
-        return remove;
-    }
     else if(head==0){ // if the head reaches 0, the array has reached the leftMost end of the array.
-        //cout<<"leftMost of the array"<<endl;
-        head = size_of_queue; //turn the tail pointer around to point to the end, and pop it. NOTE: I did not set it to size_of_queue+1,
-        int x = head;//   so it wasn't neccessary to decrement hear....altho it's more consistent with my code.
+        cout<<"leftMost of the array"<<endl;
+        head = size_of_queue; //turn the tail pointer around to point to the end, and pop it.
+       //int x = head;
+        int x = head--;//  the usual decrement, this is the line that caused a bug from submission part a.
         remove = queue[x]; //set the string to be remove before its emptied
 
         queue[x] ="";//emptied string in the element
         num_elements--; //decrement the num of element
-        //cout<<"You just removed: " << temp <<endl;
+
+        cout<<"You just removed: " << remove <<endl;
         return remove;
-    }
-    else if((head+1)==tail){        cout<<"You have poped everything out of your array!!consider pushing in some new stuff"<<endl;
     }
     else{
         int x = head--; //All other cases, just decrements the head when poping.
@@ -161,7 +172,11 @@ T Deque<T>::pop_front(){ //for pop front and back I havee a temp string remove[]
 template <class T>
 T Deque<T>::pop_back(){ //extremely similar implementation from pop_front(), refer there if needed
     //T remove;//a local temp variable that saves the string to be removed
-    if((num_elements<=(size_of_queue/4))&& (size_of_queue > minSize)){ //always check if num_of_elements reached below the 1/4 line
+    if(empty()){
+        cout<<"The Queue is empty! Can't pop anything!"<<endl;
+      //  throw;
+    }
+    else if((num_elements<=(size_of_queue/4))&& (size_of_queue > minSize)){ //always check if num_of_elements reached below the 1/4 line
         num_elements--; //subtract the num of elements inside the array.
 
         int previousTail = tail++;//stores previous tail before tail changes.
@@ -203,9 +218,6 @@ T Deque<T>::pop_back(){ //extremely similar implementation from pop_front(), ref
         cout<<"You just removed: " << remove <<endl;
         return remove;
     }
-    else if(tail==head+1){ //if some-how I implemented the else if statement above, happens when it popped everything from both ends...
-        cout<<"You have poped everything out of this queue...considering pushing in something?"<<endl;
-    }
     else{
         int x = tail++;
         remove = queue[x];//
@@ -223,7 +235,10 @@ int Deque<T>::size(){
 
 template <class T>
 bool Deque<T>::empty(){
-    return (num_elements ==0);
+    if(num_elements==0) return true;
+    else{
+        return false;
+    }
 }
 
 template <class T>
@@ -238,7 +253,7 @@ string Deque<T>::toStr(){
     else{
         int i=head;
         int j=1;
-        while(j<=num_elements){
+        while(j<=num_elements+1){
             if(i==0){
             //ss << j;
                 i = size_of_queue;

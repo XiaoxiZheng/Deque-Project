@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
       Deque<string> *DQ = new Deque<string>();
     //Deque<int> DQ;
 	//Deque *DQ = new T();
-	while (op<5)
+	while (op<6)
 	{
 
         cout << "\n Welcome to the program, " << endl;
@@ -46,10 +46,10 @@ int main(int argc, char **argv) {
             DQ->toStr();
             break;
 
-		//case 5:
-        //    cout <<"\n\n\nPrint what your Final queue really looks like: " << endl;
-		//	DQ->print_queue();
-		//	break;
+		case 5:
+            cout <<"\n\n\nPrint what your Final queue really looks like: " << endl;
+			DQ->print_queue();
+			break;
 		}
 
 	}
